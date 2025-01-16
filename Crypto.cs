@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using Windows.Win32.Security;
 
 namespace SharpSAMDump
 {
@@ -46,6 +47,30 @@ namespace SharpSAMDump
             return hash;
         }
 
+        public static byte[] UnprotectLSAKey(byte[] encryptedLSAKey, byte[] bootKey)
+        {
+            byte[] data = UnprotectLSASecret(encryptedLSAKey, bootKey);
+            byte[] lsaKey = new byte[32];
+            Array.Copy(data, 16 + 52, lsaKey, 0, 32);
+
+            return lsaKey;
+        }
+
+        public static byte[] UnprotectLSASecret(byte[] data, byte[] key)
+        {
+            byte[] salt = new byte[32];
+            Array.Copy(data, 0, salt, 0, salt.Length);
+
+            byte[] ciphertext = new byte[data.Length - salt.Length];
+            Array.Copy(data, salt.Length, ciphertext, 0, ciphertext.Length);
+
+            byte[] tmpKey = DeriveLSATmpKey(salt, key);
+            byte[] plaintext = UnprotectAESECB(tmpKey, ciphertext);
+
+            return plaintext;
+        }
+
+
         private static byte[] UnprotectPasswordHash(byte[] key, byte[] data, uint rid, HashType type) {
             EncryptionType encryptionType = (EncryptionType)BitConverter.ToInt16(data, 2);
             switch (encryptionType)
@@ -73,9 +98,10 @@ namespace SharpSAMDump
             byte[] ciphertext = new byte[data.Length - 24];
             Array.Copy(data, 8 + iv.Length, ciphertext, 0, ciphertext.Length);
 
-            return UnprotectAES(key, iv, ciphertext);
+            return UnprotectAESCBC(key, iv, ciphertext);
         }
-        private static byte[] UnprotectAES(byte[] key, byte[] iv, byte[] ciphertext)
+
+        private static byte[] UnprotectAESCBC(byte[] key, byte[] iv, byte[] ciphertext)
         {
             using (Aes aes = Aes.Create())
             {
@@ -83,6 +109,26 @@ namespace SharpSAMDump
                 aes.IV = iv;
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
+                return aes.CreateDecryptor().TransformFinalBlock(ciphertext, 0, ciphertext.Length);
+            }
+        }
+
+        private static byte[] UnprotectAESECB(byte[] key, byte[] ciphertext)
+        {
+            // Impacket does this, but I don't see how this makes sense given that we decrypt the blob.
+            //if (ciphertext.Length % 16 != 0)
+            //{
+            //    int padding = (16 - (ciphertext.Length % 16));
+            //    byte[] paddedCiphertext = new byte[ciphertext.Length + padding];
+            //    Array.Copy(ciphertext, 0, paddedCiphertext, 0, ciphertext.Length);
+            //    ciphertext = paddedCiphertext;
+            //}
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.None;
                 return aes.CreateDecryptor().TransformFinalBlock(ciphertext, 0, ciphertext.Length);
             }
         }
@@ -172,8 +218,7 @@ namespace SharpSAMDump
             }
         }
 
-
-        public static byte[] UnprotectPasswordEncryptionKey(byte[] samKey, byte[] lsaKey)
+        public static byte[] UnprotectPasswordEncryptionKey(byte[] samKey, byte[] bootKey)
         {
             EncryptionType encryptionType = (EncryptionType)BitConverter.ToInt32(samKey, 0x68);
             int endofs = BitConverter.ToInt32(samKey, 0x6C) + 0x68;
@@ -187,9 +232,9 @@ namespace SharpSAMDump
             switch (encryptionType)
             {
                 case EncryptionType.RC4:
-                    return UnprotectPasswordEncryptionKeyRC4(data, lsaKey);
+                    return UnprotectPasswordEncryptionKeyRC4(data, bootKey);
                 case EncryptionType.AES:
-                    return UnprotectPasswordEncryptionKeyAES(data, lsaKey);
+                    return UnprotectPasswordEncryptionKeyAES(data, bootKey);
                 default:
                     throw new ArgumentException($"unknown encryption type {encryptionType}");
             }
@@ -235,12 +280,12 @@ namespace SharpSAMDump
             byte[] ciphertext = new byte[encLen];
             Array.Copy(data, 0x18, ciphertext, 0, ciphertext.Length);
 
-            byte[] pek = UnprotectAES(lsaKey, iv, ciphertext);
+            byte[] pek = UnprotectAESCBC(lsaKey, iv, ciphertext);
 
             byte[] hashData = new byte[hashLen];
             Array.Copy(data, 0x18 + ciphertext.Length, hashData, 0, hashData.Length);
 
-            byte[] hash = UnprotectAES(lsaKey, iv, hashData);
+            byte[] hash = UnprotectAESCBC(lsaKey, iv, hashData);
 
             byte[] actualHash = SHA256.Create().ComputeHash(pek);
             if (!Util.ArrayEquals(hash, actualHash))
@@ -249,6 +294,20 @@ namespace SharpSAMDump
             }
 
             return pek;
+        }
+
+        private static byte[] DeriveLSATmpKey(byte[] salt, byte[] lsaKey)
+        {
+            SHA256 hash = SHA256.Create();
+
+            hash.TransformBlock(lsaKey, 0, lsaKey.Length, null, 0);
+            for (int round = 0; round < 1000; round++)
+            {
+                hash.TransformBlock(salt, 0, salt.Length, null, 0);
+            }
+            hash.TransformFinalBlock(new byte[] { }, 0, 0);
+
+            return hash.Hash;
         }
     }
 }

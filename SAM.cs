@@ -148,6 +148,7 @@ namespace SharpSAMDump
                         using (RegistryKey userKey = usersKey.OpenSubKeyForBackup(subkey))
                         {
                             byte[] data = (byte[])userKey.GetValue("V");
+                            // Console.WriteLine($"User: {rid}\n{Util.ToHexString(data)}");
                             entries.Add(new SAMEntry(rid, data));
                         }
                     } catch (Win32Exception)

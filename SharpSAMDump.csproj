@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crypto.cs" />
+    <Compile Include="DPAPI.cs" />
     <Compile Include="LSA.cs" />
     <Compile Include="Privileges.cs" />
     <Compile Include="Program.cs" />
