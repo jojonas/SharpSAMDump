@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Microsoft.Windows.CsWin32.0.3.106\build\net20\Microsoft.Windows.CsWin32.props" Condition="Exists('packages\Microsoft.Windows.CsWin32.0.3.106\build\net20\Microsoft.Windows.CsWin32.props')" />
-  <Import Project="packages\Microsoft.Windows.WDK.Win32Metadata.0.11.4-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props" Condition="Exists('packages\Microsoft.Windows.WDK.Win32Metadata.0.11.4-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props')" />
-  <Import Project="packages\Microsoft.Windows.SDK.Win32Metadata.60.0.34-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props" Condition="Exists('packages\Microsoft.Windows.SDK.Win32Metadata.60.0.34-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props')" />
+  <Import Project="packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.props" Condition="Exists('packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.props')" />
+  <Import Project="packages\Microsoft.Windows.WDK.Win32Metadata.0.13.25-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props" Condition="Exists('packages\Microsoft.Windows.WDK.Win32Metadata.0.13.25-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props')" />
+  <Import Project="packages\Microsoft.Windows.SDK.Win32Metadata.68.0.4-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props" Condition="Exists('packages\Microsoft.Windows.SDK.Win32Metadata.68.0.4-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,19 +43,19 @@
       <HintPath>packages\Microsoft.Windows.SDK.Win32Docs.0.1.42-alpha\lib\netstandard2.0\Microsoft.Windows.SDK.Win32Docs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -84,21 +84,23 @@
     <Content Include="NativeMethods.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\MessagePack.Annotations.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\MessagePack.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\Microsoft.Bcl.AsyncInterfaces.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\Microsoft.Windows.CsWin32.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\Microsoft.Windows.SDK.Win32Docs.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\System.Text.Encodings.Web.dll" />
-    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.106\analyzers\cs\System.Text.Json.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\MessagePack.Annotations.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\MessagePack.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\Microsoft.Windows.CsWin32.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\Microsoft.Windows.SDK.Win32Docs.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\System.Text.Encodings.Web.dll" />
+    <Analyzer Include="packages\Microsoft.Windows.CsWin32.0.3.257\analyzers\cs\System.Text.Json.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.Windows.SDK.Win32Metadata.60.0.34-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.SDK.Win32Metadata.60.0.34-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props'))" />
-    <Error Condition="!Exists('packages\Microsoft.Windows.WDK.Win32Metadata.0.11.4-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.WDK.Win32Metadata.0.11.4-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props'))" />
-    <Error Condition="!Exists('packages\Microsoft.Windows.CsWin32.0.3.106\build\net20\Microsoft.Windows.CsWin32.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CsWin32.0.3.106\build\net20\Microsoft.Windows.CsWin32.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Windows.SDK.Win32Metadata.68.0.4-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.SDK.Win32Metadata.68.0.4-preview\build\net20\Microsoft.Windows.SDK.Win32Metadata.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Windows.WDK.Win32Metadata.0.13.25-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.WDK.Win32Metadata.0.13.25-experimental\build\net20\Microsoft.Windows.WDK.Win32Metadata.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.targets'))" />
   </Target>
+  <Import Project="packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.targets" Condition="Exists('packages\Microsoft.Windows.CsWin32.0.3.257\build\net20\Microsoft.Windows.CsWin32.targets')" />
 </Project>
